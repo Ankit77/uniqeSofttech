@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fragment_login_tv_vesrion"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/_20sdp"
+        android:paddingRight="@dimen/_20sdp">
+
+
+        <ImageView
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:src="@drawable/final_logo" />
+
+        <LinearLayout
+            android:id="@+id/fragment_login_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/normal_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:text="username" />
+
+            <EditText
+                android:id="@+id/fragment_login_et_username"
+                style="@style/normal_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:text="BDZPK12" />
+
+            <TextView
+                style="@style/normal_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Password" />
+
+            <EditText
+                android:id="@+id/fragment_login_et_password"
+                style="@style/normal_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:text="BDZPK12" />
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/fragment_login_btn_login"
+            style="@style/normal_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:text="Login" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/fragment_login_tv_vesrion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="1.1"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/_12sdp" />
+
+</RelativeLayout>

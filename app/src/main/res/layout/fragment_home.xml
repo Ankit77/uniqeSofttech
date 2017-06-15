@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/_30sdp"
+        android:paddingRight="@dimen/_30sdp">
+
+        <TextView
+            style="@style/normal_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cashmemo no." />
+
+        <EditText
+            android:id="@+id/fragment_home_et_cashmemono"
+            style="@style/normal_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="99999999999" />
+
+
+        <TextView
+            style="@style/normal_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:text="Customer ID" />
+
+        <EditText
+            android:id="@+id/fragment_home_et_cusid"
+            style="@style/normal_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="BDZPK12" />
+
+        <TextView
+            style="@style/normal_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="Customer Name" />
+
+        <EditText
+            android:id="@+id/fragment_home_et_cusname"
+            style="@style/normal_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp" />
+
+        <TextView
+            style="@style/normal_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="Payment Mode" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/fragment_home_et_payment_mode"
+                style="@style/normal_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp" />
+
+            <Spinner
+                android:id="@+id/fragment_home_spnr_payment_mode"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"></Spinner>
+        </LinearLayout>
+
+        <TextView
+            style="@style/normal_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="Pay Amout" />
+
+        <EditText
+            android:id="@+id/fragment_home_et_amount"
+            style="@style/normal_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:inputType="numberDecimal" />
+
+        <Button
+            android:id="@+id/fragment_home_btn_submit"
+            style="@style/normal_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:text="Login" />
+    </LinearLayout>
+</ScrollView>
