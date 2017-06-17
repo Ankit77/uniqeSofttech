@@ -7,6 +7,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.app.uniqesofttech.model.CustomerModel;
+import com.app.uniqesofttech.model.PaymentModel;
+
 import java.util.ArrayList;
 
 import app.sosdemo.model.FileModel;
@@ -35,7 +38,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //    @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL(DBUtils.DB_CREATE_FILE_TABLE);
+        db.execSQL(DBUtils.DB_CREATE_CUS_TABLE);
+        db.execSQL(DBUtils.DB_CREATE_PAYMENT_TABLE);
         this.database = db;
     }
 
@@ -70,23 +74,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param
      */
 
-    public long insertSMS(FileModel fileModel) {
+    public void insertCustomer(ArrayList<CustomerModel> list) {
         if (!database.isOpen()) {
             openDataBase();
         }
         try {
-            // database.beginTransaction();
-            ContentValues values = new ContentValues();
-            values.put(DBUtils.COLUMN_FILE_FILEPATH, fileModel.getFilepath());
-            values.put(DBUtils.COLUMN_FILE_AWCODE, fileModel.getAwcode());
-            values.put(DBUtils.COLUMN_FILE_DATETIME, fileModel.getDatetime());
-            return database.insert(DBUtils.FILE_TABLE, null, values);
-
+            database.beginTransaction();
+            for (int i = 0; i < list.size(); i++) {
+                ContentValues values = new ContentValues();
+                CustomerModel smsModel = list.get(i);
+                values.put(DBUtils.COLUMN_CUSTOMER_ID, smsModel.getCusid());
+                values.put(DBUtils.COLUMN_CUSTOMER_NAME, smsModel.getName());
+                values.put(DBUtils.COLUMN_CUSTOMER_ADDRESS, smsModel.getAddress());
+                database.insert(DBUtils.CUSTOMER_TABLE, null, values);
+            }
+            database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
 
         } finally {
+            database.endTransaction();
+            close();
+            SQLiteDatabase.releaseMemory();
+        }
+    }
+
+    public void insertCustomer(ArrayList<PaymentModel> list) {
+        if (!database.isOpen()) {
+            openDataBase();
+        }
+        try {
+            database.beginTransaction();
+            for (int i = 0; i < list.size(); i++) {
+                ContentValues values = new ContentValues();
+                PaymentModel smsModel = list.get(i);
+                values.put(DBUtils.COLUMN_PAYMENT_ID, smsModel.getPaymentId());
+                values.put(DBUtils.COLUMN_PAYMENT_MODE, smsModel.getPaymentmode());
+                database.insert(DBUtils.PAYMENT_TABLE, null, values);
+            }
+            database.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } finally {
+            database.endTransaction();
             close();
             SQLiteDatabase.releaseMemory();
         }
@@ -99,7 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param
      * @return
      */
-    public ArrayList<FileModel> getFileList() {
+    public ArrayList<CustomerModel> getFileList() {
         final ArrayList<FileModel> fileList = new ArrayList<FileModel>();
         if (!database.isOpen()) {
             openDataBase();

@@ -10,12 +10,13 @@ public class DBUtils {
     /**
      * Database Name
      */
-    public static final String DATABASE_NAME = "spy.db";
+    public static final String DATABASE_NAME = "deltrack.db";
 
     /**
      * Tables Constant Names
      */
-    public static final String FILE_TABLE = "file";
+    public static final String CUSTOMER_TABLE = "customer";
+    public static final String PAYMENT_TABLE = "payment";
 
 
 //
@@ -24,17 +25,23 @@ public class DBUtils {
     /**
      * Columns Names
      */
-    // SMS
-    public static final String COLUMN_FILE_FILEPATH = "filepath";
-    public static final String COLUMN_FILE_AWCODE = "awcode";
-    public static final String COLUMN_FILE_DATETIME = "datetime";
+    // CUS
+    public static final String COLUMN_CUSTOMER_ID = "cusid";
+    public static final String COLUMN_CUSTOMER_NAME = "cusname";
+    public static final String COLUMN_CUSTOMER_ADDRESS = "address";
+
+    public static final String COLUMN_PAYMENT_ID = "payid";
+    public static final String COLUMN_PAYMENT_MODE = "paymentmode";
 
 
     //    /**
 
     //SMS TABLE
-    static final String DB_CREATE_FILE_TABLE = "CREATE TABLE IF NOT EXISTS " + FILE_TABLE + " (" + COLUMN_FILE_FILEPATH
-            + " TEXT, " + COLUMN_FILE_AWCODE + " TEXT," + COLUMN_FILE_DATETIME + " TEXT)";
+    static final String DB_CREATE_CUS_TABLE = "CREATE TABLE IF NOT EXISTS " + CUSTOMER_TABLE + " (" + COLUMN_CUSTOMER_ID
+            + " TEXT, " + COLUMN_CUSTOMER_NAME + " TEXT," + COLUMN_CUSTOMER_ADDRESS + " TEXT)";
+
+    static final String DB_CREATE_PAYMENT_TABLE = "CREATE TABLE IF NOT EXISTS " + PAYMENT_TABLE + " (" + COLUMN_PAYMENT_ID
+            + " TEXT, " + COLUMN_PAYMENT_MODE + " TEXT)";
 
 
 }
