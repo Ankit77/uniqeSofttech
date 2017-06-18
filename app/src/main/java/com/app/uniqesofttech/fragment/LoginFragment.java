@@ -43,7 +43,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_login, null);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        init();
+        return view;
     }
 
     private void init() {
@@ -84,9 +85,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected Boolean doInBackground(String... voids) {
-            String url = "http://refillapi.uniquesoftech.com/api/GetUser?user=" + voids[0] + "&password=" + voids[1];
             WSLogin wsLogin = new WSLogin();
-            return wsLogin.executeTown(url, getActivity());
+            return wsLogin.executeWebservice(voids[0], voids[1]);
         }
 
         @Override
@@ -142,17 +142,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
+//            String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
+            String userid = "1";
             String Date = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME);
-            String url = "http://refillapi.uniquesoftech.com/api/GetUploadingData?UserID=" + userid + "&Fetchingdate=" + Date;
             GetCustomerData getCustomerData = new GetCustomerData();
-            ArrayList<CustomerModel> cusList = getCustomerData.executeTown(url, getActivity());
+            ArrayList<CustomerModel> cusList = getCustomerData.executeWebservice(Date, userid);
             if (cusList != null && cusList.size() > 0) {
                 DelTrackApp.getInstance().getDatabaseHelper().insertCustomer(cusList);
             }
-            String paymentmodeurl = "http://refillapi.uniquesoftech.com/api/GetPaymentMode";
             GetPaymentMode getPaymentMode = new GetPaymentMode();
-            ArrayList<PaymentModel> patmentlist = getPaymentMode.executePaymentMode(paymentmodeurl, getActivity());
+            ArrayList<PaymentModel> patmentlist = getPaymentMode.executeWebservice();
             if (patmentlist != null && patmentlist.size() > 0) {
                 DelTrackApp.getInstance().getDatabaseHelper().deletePaymentMode();
                 DelTrackApp.getInstance().getDatabaseHelper().insertPayment(patmentlist);

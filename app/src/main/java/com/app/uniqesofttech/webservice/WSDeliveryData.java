@@ -28,9 +28,9 @@ public class WSDeliveryData {
         return success;
     }
 
-    public boolean executeWebservice(String userid, String cashmemono,String paymentmode,String amount) {
+    public boolean executeWebservice(String userid, String cashmemono, String paymentmode, String amount) {
 
-        final String url = "http://refillapi.uniquesoftech.com/api/DeliveryData?UseID="+userid+"&CashMemoNo="+cashmemono+"&PaymentModeID="+paymentmode+"&Amount="+amount;
+        final String url = "http://refillapi.uniquesoftech.com/api/DeliveryData?UseID=" + userid + "&CashMemoNo=" + cashmemono + "&PaymentModeID=" + paymentmode + "&Amount=" + amount;
         try {
             Bundle bundle = new Bundle();
             return parseJSONResponse(WebService.POST(url, generateRequest(bundle)));
@@ -57,11 +57,12 @@ public class WSDeliveryData {
     public boolean parseJSONResponse(final String response) {
         try {
             if (!TextUtils.isEmpty(response)) {
-
-                }
                 return true;
-
-        } catch (Exception e) {
+            } else {
+                return false;
+            }
+        } catch (Exception e)
+        {
             e.printStackTrace();
             return false;
 

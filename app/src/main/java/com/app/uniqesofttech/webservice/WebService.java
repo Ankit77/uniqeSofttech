@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.app.uniqesofttech.util.WriteLog;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -50,12 +52,16 @@ public class WebService {
         return response.body().string();
     }
     public static String GET(HttpUrl url) throws IOException {
+        WriteLog.E("E-URL",url.toString());
         Request request = new Request.Builder()
                 .url(url)
                 .get()
                 .build();
         Response response = new OkHttpClient().newCall(request).execute();
-        return response.body().string();
+        String res=response.body().string();
+
+        WriteLog.E("E-RESPONSE",res);
+        return res;
     }
     public static String GETWithHeader(HttpUrl url,String headername,String headervalue) throws IOException {
         Request request = new Request.Builder()

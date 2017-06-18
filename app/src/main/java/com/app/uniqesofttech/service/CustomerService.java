@@ -27,16 +27,15 @@ public class CustomerService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         String paymentmodeurl = "http://refillapi.uniquesoftech.com/api/GetPaymentMode";
         GetPaymentMode getPaymentMode = new GetPaymentMode();
-        ArrayList<PaymentModel> patmentlist = getPaymentMode.executePaymentMode(paymentmodeurl, CustomerService.this);
+        ArrayList<PaymentModel> patmentlist = getPaymentMode.executeWebservice();
         if (patmentlist != null && patmentlist.size() > 0) {
             DelTrackApp.getInstance().getDatabaseHelper().deletePaymentMode();
             DelTrackApp.getInstance().getDatabaseHelper().insertPayment(patmentlist);
         }
         String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
         String Date = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME);
-        String url = "http://refillapi.uniquesoftech.com/api/GetUploadingData?UserID=" + userid + "&Fetchingdate=" + Date;
         GetCustomerData getCustomerData = new GetCustomerData();
-        ArrayList<CustomerModel> cusList = getCustomerData.executeTown(url, CustomerService.this);
+        ArrayList<CustomerModel> cusList = getCustomerData.executeWebservice(Date, userid);
         if (cusList != null && cusList.size() > 0) {
             DelTrackApp.getInstance().getDatabaseHelper().insertCustomer(cusList);
         }

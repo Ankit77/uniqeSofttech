@@ -9,10 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.app.uniqesofttech.model.CustomerModel;
 import com.app.uniqesofttech.model.PaymentModel;
+import com.app.uniqesofttech.model.SyncModel;
+import com.app.uniqesofttech.util.WriteLog;
 
 import java.util.ArrayList;
 
-import app.sosdemo.model.FileModel;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -40,6 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(DBUtils.DB_CREATE_CUS_TABLE);
         db.execSQL(DBUtils.DB_CREATE_PAYMENT_TABLE);
+        db.execSQL(DBUtils.DB_CREATE_SYNC_TABLE);
         this.database = db;
     }
 
@@ -86,7 +88,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(DBUtils.COLUMN_CUSTOMER_ID, smsModel.getCusid());
                 values.put(DBUtils.COLUMN_CUSTOMER_NAME, smsModel.getName());
                 values.put(DBUtils.COLUMN_CUSTOMER_ADDRESS, smsModel.getAddress());
-                database.insert(DBUtils.CUSTOMER_TABLE, null, values);
+                values.put(DBUtils.COLUMN_CUSTOMER_CASHMEMONO, smsModel.getCashMemoNo());
+                long val=database.insert(DBUtils.CUSTOMER_TABLE, null, values);
+                WriteLog.E("VAL",""+val);
             }
             database.setTransactionSuccessful();
         } catch (Exception e) {
@@ -110,7 +114,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 PaymentModel smsModel = list.get(i);
                 values.put(DBUtils.COLUMN_PAYMENT_ID, smsModel.getPaymentId());
                 values.put(DBUtils.COLUMN_PAYMENT_MODE, smsModel.getPaymentmode());
-                database.insert(DBUtils.PAYMENT_TABLE, null, values);
+                long val=database.insert(DBUtils.PAYMENT_TABLE, null, values);
+                WriteLog.E("VAL1",""+val);
             }
             database.setTransactionSuccessful();
         } catch (Exception e) {
@@ -123,21 +128,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public long insertSync(SyncModel syncModel) {
+        if (!database.isOpen()) {
+            openDataBase();
+        }
+        try {
+            // database.beginTransaction();
+            ContentValues values = new ContentValues();
+            values.put(DBUtils.COLUMN_SYNC_CASHMEMO, syncModel.getCashmemono());
+            values.put(DBUtils.COLUMN_SYNC_DEALERCODE, syncModel.getDealercode());
+            values.put(DBUtils.COLUMN_SYNC_AMOUNT, syncModel.getAmount());
+            values.put(DBUtils.COLUMN_SYNC_PAYMENTMODE, syncModel.getPaymentmode());
+            return database.insert(DBUtils.SYNC_TABLE, null, values);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+
+        } finally {
+            close();
+            SQLiteDatabase.releaseMemory();
+        }
+    }
     /**
      * get SMS All SMSList
      *
      * @param
      * @return
      */
-    public CustomerModel getCustomer(String cusID) {
+    public CustomerModel getCustomer(String cusmemono) {
         CustomerModel customerModel = null;
         if (!database.isOpen()) {
             openDataBase();
         }
         Cursor cursor = null;
         try {
-            String query = "Select * from " + DBUtils.CUSTOMER_TABLE + " where " + DBUtils.COLUMN_CUSTOMER_ID + "=" + cusID;
+            String query = "Select * from " + DBUtils.CUSTOMER_TABLE + " where " + DBUtils.COLUMN_CUSTOMER_CASHMEMONO + "=" + cusmemono;
             cursor = database.rawQuery(query, null);
             if (cursor != null && cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -147,6 +173,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     customerModel.setCusid(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_CUSTOMER_ID)));
                     customerModel.setName(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_CUSTOMER_NAME)));
                     customerModel.setAddress(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_CUSTOMER_ADDRESS)));
+                    customerModel.setCashMemoNo(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_CUSTOMER_CASHMEMONO)));
                 }
             }
         } catch (Exception e) {
@@ -164,7 +191,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public ArrayList<PaymentModel> getPaymentList() {
-        ArrayList<PaymentModel> paymentlist = null;
+        ArrayList<PaymentModel> paymentlist = new ArrayList<>();
         if (!database.isOpen()) {
             openDataBase();
         }
@@ -197,6 +224,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public ArrayList<SyncModel> getSyncList() {
+        ArrayList<SyncModel> syncList = null;
+        if (!database.isOpen()) {
+            openDataBase();
+        }
+        Cursor cursor = null;
+        try {
+            String query = "Select * from " + DBUtils.SYNC_TABLE;
+            cursor = database.rawQuery(query, null);
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                SyncModel syncModel = null;
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    syncModel = new SyncModel();
+                    syncModel.setId(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_SYNC_ID)));
+                    syncModel.setDealercode(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_SYNC_DEALERCODE)));
+                    syncModel.setAmount(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_SYNC_AMOUNT)));
+                    syncModel.setPaymentmode(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_SYNC_PAYMENTMODE)));
+                    syncModel.setCashmemono(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_SYNC_CASHMEMO)));
+                    cursor.moveToNext();
+                    syncList.add(syncModel);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+            close();
+            if (cursor != null) {
+                cursor.close();
+                SQLiteDatabase.releaseMemory();
+            }
+        }
+        return syncList;
+    }
+
+
     /**
      * Delete SMS
      */
@@ -206,12 +270,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Delete SMS by id
      */
 
-    public void deleteSMS(String cusid) {
+    public void deleteCustomer(String cashmemono) {
         if (!database.isOpen()) {
             openDataBase();
         }
         try {
-            database.delete(DBUtils.CUSTOMER_TABLE, DBUtils.COLUMN_CUSTOMER_ID + "=" + cusid, null);
+            database.delete(DBUtils.CUSTOMER_TABLE, DBUtils.COLUMN_CUSTOMER_CASHMEMONO + "=" + cashmemono, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+    }
+
+
+    public void deleteSyncData(String syncid) {
+        if (!database.isOpen()) {
+            openDataBase();
+        }
+        try {
+            database.delete(DBUtils.SYNC_TABLE, DBUtils.COLUMN_SYNC_ID + "=" + syncid, null);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

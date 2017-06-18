@@ -41,13 +41,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:text="BDZPK12" />
+                android:text="rajan"
+                />
 
             <TextView
                 style="@style/normal_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
+
                 android:text="Password" />
 
             <EditText
@@ -56,7 +58,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:text="BDZPK12" />
+                android:inputType="textPassword"
+                android:text="rajan"
+                />
         </LinearLayout>
 
 
