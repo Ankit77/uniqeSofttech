@@ -99,7 +99,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void insertCustomer(ArrayList<PaymentModel> list) {
+    public void insertPayment(ArrayList<PaymentModel> list) {
         if (!database.isOpen()) {
             openDataBase();
         }
@@ -130,27 +130,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param
      * @return
      */
-    public ArrayList<CustomerModel> getFileList() {
-        final ArrayList<FileModel> fileList = new ArrayList<FileModel>();
+    public CustomerModel getCustomer(String cusID) {
+        CustomerModel customerModel = null;
         if (!database.isOpen()) {
             openDataBase();
         }
         Cursor cursor = null;
         try {
-            String query = "Select * from " + DBUtils.FILE_TABLE;
+            String query = "Select * from " + DBUtils.CUSTOMER_TABLE + " where " + DBUtils.COLUMN_CUSTOMER_ID + "=" + cusID;
             cursor = database.rawQuery(query, null);
             if (cursor != null && cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                FileModel model = null;
+
                 for (int i = 0; i < cursor.getCount(); i++) {
-                    model = new FileModel();
-                    model.setFilepath(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_FILE_FILEPATH)));
-                    model.setAwcode(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_FILE_AWCODE)));
-                    model.setDatetime(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_FILE_DATETIME)));
-                    fileList.add(model);
-                    cursor.moveToNext();
+                    customerModel = new CustomerModel();
+                    customerModel.setCusid(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_CUSTOMER_ID)));
+                    customerModel.setName(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_CUSTOMER_NAME)));
+                    customerModel.setAddress(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_CUSTOMER_ADDRESS)));
                 }
-                fileList.trimToSize();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,7 +159,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 SQLiteDatabase.releaseMemory();
             }
         }
-        return fileList;
+        return customerModel;
+    }
+
+
+    public ArrayList<PaymentModel> getPaymentList() {
+        ArrayList<PaymentModel> paymentlist = null;
+        if (!database.isOpen()) {
+            openDataBase();
+        }
+        Cursor cursor = null;
+        try {
+            String query = "Select * from " + DBUtils.PAYMENT_TABLE;
+            cursor = database.rawQuery(query, null);
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                PaymentModel paymentModel = null;
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    paymentModel = new PaymentModel();
+                    paymentModel.setPaymentId(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_PAYMENT_ID)));
+                    paymentModel.setPaymentmode(cursor.getString(cursor.getColumnIndex(DBUtils.COLUMN_PAYMENT_MODE)));
+                    cursor.moveToNext();
+                    paymentlist.add(paymentModel);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+            close();
+            if (cursor != null) {
+                cursor.close();
+                SQLiteDatabase.releaseMemory();
+            }
+        }
+        return paymentlist;
     }
 
 
@@ -175,12 +206,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Delete SMS by id
      */
 
-    public void deleteSMS(String awcode) {
+    public void deleteSMS(String cusid) {
         if (!database.isOpen()) {
             openDataBase();
         }
         try {
-            database.delete(DBUtils.FILE_TABLE, DBUtils.COLUMN_FILE_AWCODE + "=" + awcode, null);
+            database.delete(DBUtils.CUSTOMER_TABLE, DBUtils.COLUMN_CUSTOMER_ID + "=" + cusid, null);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -188,12 +219,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteAllData() {
+    public void deletePaymentMode() {
         if (!database.isOpen()) {
             openDataBase();
         }
         try {
-            database.delete(DBUtils.FILE_TABLE, null, null);
+            database.delete(DBUtils.PAYMENT_TABLE, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+    }
+
+    public void deleteAllCustomerData() {
+        if (!database.isOpen()) {
+            openDataBase();
+        }
+        try {
+            database.delete(DBUtils.CUSTOMER_TABLE, null, null);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

@@ -14,9 +14,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.app.uniqesofttech.DelTrackApp;
 import com.app.uniqesofttech.R;
+import com.app.uniqesofttech.model.CustomerModel;
+import com.app.uniqesofttech.model.PaymentModel;
+import com.app.uniqesofttech.service.CustomerService;
+import com.app.uniqesofttech.util.Const;
 import com.app.uniqesofttech.util.Utils;
+import com.app.uniqesofttech.webservice.GetCustomerData;
+import com.app.uniqesofttech.webservice.GetPaymentMode;
 import com.app.uniqesofttech.webservice.WSLogin;
+
+import java.util.ArrayList;
 
 /**
  * Created by ANKIT on 6/17/2017.
@@ -28,6 +37,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Button btnLogin;
     private TextView tvVersion;
     private AsyncLogin asyncLogin;
+    private AsyncLoadCustomerData asyncLoadCustomerData;
 
     @Nullable
     @Override
@@ -63,7 +73,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private class AsyncLogin extends AsyncTask<String, Void, Void> {
+    private class AsyncLogin extends AsyncTask<String, Void, Boolean> {
         private ProgressDialog progressDialog;
 
         @Override
@@ -73,22 +83,28 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        protected Void doInBackground(String... voids) {
+        protected Boolean doInBackground(String... voids) {
             String url = "http://refillapi.uniquesoftech.com/api/GetUser?user=" + voids[0] + "&password=" + voids[1];
             WSLogin wsLogin = new WSLogin();
-            wsLogin.executeTown(url, getActivity());
-            return null;
+            return wsLogin.executeTown(url, getActivity());
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Boolean aVoid) {
             super.onPostExecute(aVoid);
-            if (progressDialog != null && progressDialog.isShowing()) {
-                Utils.dismissProgressDialog(progressDialog);
-            }
-            HomeFragment homeFragment = new HomeFragment();
-            Utils.replaceNextFragment(R.id.activity_main_container, getActivity(), homeFragment);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    Utils.dismissProgressDialog(progressDialog);
+                }
 
+                if (aVoid) {
+                    asyncLoadCustomerData = new AsyncLoadCustomerData();
+                    asyncLoadCustomerData.execute();
+                } else {
+                    Utils.displayDialog(getActivity(), "Username or Password is not valid");
+                }
+
+            }
         }
     }
 
@@ -97,6 +113,51 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         super.onDestroy();
         if (asyncLogin != null && asyncLogin.getStatus() == AsyncTask.Status.RUNNING) {
             asyncLogin.cancel(true);
+        }
+        if (asyncLoadCustomerData != null && asyncLoadCustomerData.getStatus() == AsyncTask.Status.RUNNING) {
+            asyncLoadCustomerData.cancel(true);
+        }
+    }
+
+    private class AsyncLoadCustomerData extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity(), "Loading Customer Data");
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    Utils.dismissProgressDialog(progressDialog);
+                }
+                HomeFragment homeFragment = new HomeFragment();
+                Utils.replaceNextFragment(R.id.activity_main_container, getActivity(), homeFragment);
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
+            String Date = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME);
+            String url = "http://refillapi.uniquesoftech.com/api/GetUploadingData?UserID=" + userid + "&Fetchingdate=" + Date;
+            GetCustomerData getCustomerData = new GetCustomerData();
+            ArrayList<CustomerModel> cusList = getCustomerData.executeTown(url, getActivity());
+            if (cusList != null && cusList.size() > 0) {
+                DelTrackApp.getInstance().getDatabaseHelper().insertCustomer(cusList);
+            }
+            String paymentmodeurl = "http://refillapi.uniquesoftech.com/api/GetPaymentMode";
+            GetPaymentMode getPaymentMode = new GetPaymentMode();
+            ArrayList<PaymentModel> patmentlist = getPaymentMode.executePaymentMode(paymentmodeurl, getActivity());
+            if (patmentlist != null && patmentlist.size() > 0) {
+                DelTrackApp.getInstance().getDatabaseHelper().deletePaymentMode();
+                DelTrackApp.getInstance().getDatabaseHelper().insertPayment(patmentlist);
+            }
+            return null;
         }
     }
 }

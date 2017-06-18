@@ -16,6 +16,9 @@ import android.os.Build;
 
 import com.app.uniqesofttech.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * Created by ANKIT on 6/17/2017.
  */
@@ -144,4 +147,10 @@ public class Utils {
         transaction.commit();
     }
 
+    public static String getCurrentDate() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String formattedDate = df.format(c.getTime());
+        return formattedDate;
+    }
 }

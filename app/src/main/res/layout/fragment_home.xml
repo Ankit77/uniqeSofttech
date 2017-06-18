@@ -43,6 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
             android:text="BDZPK12" />
 
         <TextView
@@ -57,6 +59,8 @@
             style="@style/normal_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:layout_marginTop="@dimen/_5sdp" />
 
         <TextView

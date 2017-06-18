@@ -5,6 +5,7 @@ import android.content.Context;
 import com.app.uniqesofttech.DelTrackApp;
 import com.app.uniqesofttech.model.CustomerModel;
 import com.app.uniqesofttech.util.Const;
+import com.app.uniqesofttech.util.Utils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -42,20 +43,26 @@ public class GetCustomerData {
             conn.setDoInput(true);
             conn.connect();
             InputStream stream = conn.getInputStream();
+            DelTrackApp.getInstance().getSharedPreferences().edit().putString(Const.PREF_LASTUPDATE, Utils.getCurrentDate()).commit();
             return parseResponse(stream);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            DelTrackApp.getInstance().getSharedPreferences().edit().putString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME).commit();
             return null;
+
         } catch (ProtocolException e) {
             e.printStackTrace();
+            DelTrackApp.getInstance().getSharedPreferences().edit().putString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME).commit();
             return null;
         } catch (IOException e) {
             e.printStackTrace();
+            DelTrackApp.getInstance().getSharedPreferences().edit().putString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME).commit();
             return null;
         }
     }
 
     public ArrayList<CustomerModel> parseResponse(InputStream stream) {
+
         ArrayList<CustomerModel> cusList = new ArrayList<>();
         CustomerModel customerModel = null;
         String text = "";
@@ -85,6 +92,7 @@ public class GetCustomerData {
                             customerModel.setName(text);
                         } else if (tagname.equalsIgnoreCase("FetchRemainingData_Result")) {
                             cusList.add(customerModel);
+
                         }
                         break;
                     default:
@@ -94,8 +102,10 @@ public class GetCustomerData {
             }
         } catch (XmlPullParserException e) {
             e.printStackTrace();
+            DelTrackApp.getInstance().getSharedPreferences().edit().putString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME).commit();
         } catch (IOException e) {
             e.printStackTrace();
+            DelTrackApp.getInstance().getSharedPreferences().edit().putString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME).commit();
         }
         return cusList;
     }
