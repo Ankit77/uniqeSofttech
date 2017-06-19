@@ -1,5 +1,7 @@
 package com.app.uniqesofttech;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +23,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         tvTitle = (TextView) findViewById(R.id.activity_main_tvtitle);
         imgLogout = (ImageView) findViewById(R.id.activity_main_imgLogout);
+        imgLogout.setOnClickListener(this);
+
+
         if (DelTrackApp.getInstance().getSharedPreferences().getBoolean(Const.PREF_ISREGISTER, false)) {
             HomeFragment homeFragment = new HomeFragment();
             Utils.replaceNextFragment(R.id.activity_main_container, MainActivity.this, homeFragment);

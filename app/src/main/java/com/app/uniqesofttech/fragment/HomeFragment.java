@@ -126,6 +126,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 if (customerModel != null) {
                     etCusId.setText(customerModel.getCusid());
                     etCusName.setText(customerModel.getName());
+                }else
+                {
+                    Utils.displayDialog(getActivity(),"No data found for this cashmemo");
                 }
             }
         } else if (view == etPaymentMode) {
