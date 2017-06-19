@@ -142,8 +142,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected Void doInBackground(Void... voids) {
-//            String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
-            String userid = "1";
+           String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
+           // String userid = "1";
             String Date = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME);
             GetCustomerData getCustomerData = new GetCustomerData();
             ArrayList<CustomerModel> cusList = getCustomerData.executeWebservice(Date, userid);

@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == imgLogout) {
+            DelTrackApp.getInstance().getDatabaseHelper().deleteAllCustomerData();
+            DelTrackApp.getInstance().getDatabaseHelper().deletePaymentMode();
+            DelTrackApp.getInstance().getDatabaseHelper().deleteAllSyncData();
             DelTrackApp.getInstance().getSharedPreferences().edit().clear().commit();
             LoginFragment loginFragment = new LoginFragment();
             Utils.replaceNextFragment(R.id.activity_main_container, MainActivity.this, loginFragment);

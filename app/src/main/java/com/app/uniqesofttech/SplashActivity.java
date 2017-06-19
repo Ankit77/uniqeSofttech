@@ -40,8 +40,7 @@ public class SplashActivity extends AppCompatActivity {
                     if (Utils.isNetworkAvailable(SplashActivity.this)) {
                         asyncLoadCustomerData = new AsyncLoadCustomerData();
                         asyncLoadCustomerData.execute();
-                    }else
-                    {
+                    } else {
                         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
@@ -76,8 +75,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-//            String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
-            String userid = "1";
+          String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
             String Date = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME);
             GetCustomerData getCustomerData = new GetCustomerData();
             ArrayList<CustomerModel> cusList = getCustomerData.executeWebservice(Date, userid);
