@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -43,6 +42,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private Spinner spnrPaymentMode;
     private SpinnerAdapter spinnerAdapter;
     private ArrayList<PaymentModel> paymentlist;
+    private AsyncSubmitData asyncSubmitData;
+    private int paymentmode = -1;
 
 
     @Nullable
@@ -74,6 +75,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 etPaymentMode.setText(paymentlist.get(position).getPaymentmode());
+                paymentmode = Integer.parseInt(paymentlist.get(position).getPaymentId());
             }
 
             @Override
@@ -95,13 +97,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 Utils.displayDialog(getActivity(), "Consumer name cant be blank.");
             } else if (TextUtils.isEmpty(etPaymentMode.getText().toString())) {
                 Utils.displayDialog(getActivity(), "Please select payment mode");
-            } else if (TextUtils.isEmpty(etAmont.getText().toString())) {
+            } else if (TextUtils.isEmpty(etAmont.getText().toString()) || paymentmode == -1) {
+                Utils.displayDialog(getActivity(), "Please enter amount");
+            } else {
                 if (Utils.isNetworkAvailable(getActivity())) {
-
+                    asyncSubmitData = new AsyncSubmitData();
+                    asyncSubmitData.execute(etCashMemo.getText().toString(), String.valueOf(paymentmode), etAmont.getText().toString());
                 } else {
-                    Utils.displayDialog(getActivity(), getString(R.string.alert_not_connectivity));
-
+                    SyncModel syncModel = new SyncModel();
+                    syncModel.setDealercode(DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, ""));
+                    syncModel.setCashmemono(etCashMemo.getText().toString());
+                    syncModel.setPaymentmode(String.valueOf(paymentmode));
+                    syncModel.setAmount(etAmont.getText().toString());
+                    DelTrackApp.getInstance().getDatabaseHelper().insertSync(syncModel);
+                    DelTrackApp.getInstance().getDatabaseHelper().deleteCustomer(etCashMemo.getText().toString());
                 }
+                etAmont.setText("");
+                etCusName.setText("");
+                etCusId.setText("");
+                paymentmode = Integer.parseInt(paymentlist.get(0).getPaymentId());
+                spnrPaymentMode.setSelection(0);
             }
         } else if (view == btnGetInfo) {
             if (TextUtils.isEmpty(etCashMemo.getText().toString())) {
@@ -118,11 +133,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private class AsyncLoadData extends AsyncTask<String, Void, Boolean> {
+    private class AsyncSubmitData extends AsyncTask<String, Void, Boolean> {
         private ProgressDialog progressDialog;
         private String dealercode;
         private String cashmemono;
-        private String paymentmode;
+        private String mpaymentmode;
         private String amount;
 
         @Override
@@ -135,10 +150,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         protected Boolean doInBackground(String... params) {
             dealercode = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
             cashmemono = params[0];
-            paymentmode = params[1];
+            mpaymentmode = params[1];
             amount = params[2];
             WSDeliveryData wsDeliveryData = new WSDeliveryData();
-            return wsDeliveryData.executeWebservice(dealercode, cashmemono, paymentmode, amount);
+            return wsDeliveryData.executeWebservice(dealercode, cashmemono, mpaymentmode, amount);
         }
 
         @Override
@@ -152,9 +167,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 SyncModel syncModel = new SyncModel();
                 syncModel.setDealercode(dealercode);
                 syncModel.setCashmemono(cashmemono);
-                syncModel.setPaymentmode(paymentmode);
+                syncModel.setPaymentmode(mpaymentmode);
                 syncModel.setAmount(amount);
                 DelTrackApp.getInstance().getDatabaseHelper().insertSync(syncModel);
+                DelTrackApp.getInstance().getDatabaseHelper().deleteCustomer(cashmemono);
+            }else
+            {
+                DelTrackApp.getInstance().getDatabaseHelper().deleteCustomer(cashmemono);
             }
         }
     }

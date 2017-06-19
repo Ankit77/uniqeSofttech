@@ -89,8 +89,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(DBUtils.COLUMN_CUSTOMER_NAME, smsModel.getName());
                 values.put(DBUtils.COLUMN_CUSTOMER_ADDRESS, smsModel.getAddress());
                 values.put(DBUtils.COLUMN_CUSTOMER_CASHMEMONO, smsModel.getCashMemoNo());
-                long val=database.insert(DBUtils.CUSTOMER_TABLE, null, values);
-                WriteLog.E("VAL",""+val);
+                long val = database.insert(DBUtils.CUSTOMER_TABLE, null, values);
+                WriteLog.E("VAL", "" + val);
             }
             database.setTransactionSuccessful();
         } catch (Exception e) {
@@ -114,8 +114,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 PaymentModel smsModel = list.get(i);
                 values.put(DBUtils.COLUMN_PAYMENT_ID, smsModel.getPaymentId());
                 values.put(DBUtils.COLUMN_PAYMENT_MODE, smsModel.getPaymentmode());
-                long val=database.insert(DBUtils.PAYMENT_TABLE, null, values);
-                WriteLog.E("VAL1",""+val);
+                long val = database.insert(DBUtils.PAYMENT_TABLE, null, values);
+                WriteLog.E("VAL1", "" + val);
             }
             database.setTransactionSuccessful();
         } catch (Exception e) {
@@ -139,7 +139,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(DBUtils.COLUMN_SYNC_DEALERCODE, syncModel.getDealercode());
             values.put(DBUtils.COLUMN_SYNC_AMOUNT, syncModel.getAmount());
             values.put(DBUtils.COLUMN_SYNC_PAYMENTMODE, syncModel.getPaymentmode());
-            return database.insert(DBUtils.SYNC_TABLE, null, values);
+            long i = database.insert(DBUtils.SYNC_TABLE, null, values);
+            return i;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,6 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             SQLiteDatabase.releaseMemory();
         }
     }
+
     /**
      * get SMS All SMSList
      *
@@ -225,7 +227,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public ArrayList<SyncModel> getSyncList() {
-        ArrayList<SyncModel> syncList = null;
+        ArrayList<SyncModel> syncList = new ArrayList<>();
         if (!database.isOpen()) {
             openDataBase();
         }

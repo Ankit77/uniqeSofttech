@@ -3,9 +3,6 @@ package com.app.uniqesofttech.webservice;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 
 import okhttp3.FormBody;
@@ -61,8 +58,7 @@ public class WSDeliveryData {
             } else {
                 return false;
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
 
