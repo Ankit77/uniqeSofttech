@@ -1,6 +1,8 @@
 package com.app.uniqesofttech;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.app.uniqesofttech.model.CustomerModel;
 import com.app.uniqesofttech.model.PaymentModel;
@@ -26,11 +29,21 @@ public class SplashActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private ProgressBar progressBar;
     private AsyncLoadCustomerData asyncLoadCustomerData;
+    private TextView tvVersion;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String version = pInfo.versionName;
+        tvVersion=(TextView)findViewById(R.id.activity_splash_tv_vesrion);
+        tvVersion.setText("version "+version);
         progressBar = (ProgressBar) findViewById(R.id.activity_splash_progressBar);
         handler.postDelayed(new Runnable() {
             @Override
@@ -75,7 +88,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_USERID, "");
+          String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
             String Date = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME);
             GetCustomerData getCustomerData = new GetCustomerData();
             ArrayList<CustomerModel> cusList = getCustomerData.executeWebservice(Date, userid);

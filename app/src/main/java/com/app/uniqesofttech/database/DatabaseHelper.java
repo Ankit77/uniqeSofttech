@@ -325,6 +325,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void deleteAllSyncData() {
+        if (!database.isOpen()) {
+            openDataBase();
+        }
+        try {
+            database.delete(DBUtils.SYNC_TABLE, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+    }
+
     //--------------------------------SMS END------------------------------------
 
 }

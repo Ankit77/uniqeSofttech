@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:text="rajan"
+
                 />
 
             <TextView
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:inputType="textPassword"
-                android:text="rajan"
+
                 />
         </LinearLayout>
 
@@ -73,15 +73,5 @@
             android:text="Login" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/fragment_login_tv_vesrion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:gravity="center"
-        android:text="1.1"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/_12sdp" />
 
 </RelativeLayout>
