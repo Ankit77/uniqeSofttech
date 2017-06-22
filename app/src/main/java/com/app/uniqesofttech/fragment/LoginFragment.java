@@ -1,7 +1,6 @@
 package com.app.uniqesofttech.fragment;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import com.app.uniqesofttech.DelTrackApp;
 import com.app.uniqesofttech.R;
 import com.app.uniqesofttech.model.CustomerModel;
 import com.app.uniqesofttech.model.PaymentModel;
-import com.app.uniqesofttech.service.CustomerService;
 import com.app.uniqesofttech.util.Const;
 import com.app.uniqesofttech.util.Utils;
 import com.app.uniqesofttech.webservice.GetCustomerData;
@@ -142,8 +140,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected Void doInBackground(Void... voids) {
-//            String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
-            String userid = "1";
+            String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_USERID, "");
+           // String userid = "1";
             String Date = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME);
             GetCustomerData getCustomerData = new GetCustomerData();
             ArrayList<CustomerModel> cusList = getCustomerData.executeWebservice(Date, userid);

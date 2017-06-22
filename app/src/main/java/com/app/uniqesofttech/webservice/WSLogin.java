@@ -1,32 +1,17 @@
 package com.app.uniqesofttech.webservice;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.app.uniqesofttech.DelTrackApp;
 import com.app.uniqesofttech.util.Const;
-import com.app.uniqesofttech.util.WriteLog;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 
-import okhttp3.FormBody;
 import okhttp3.HttpUrl;
-import okhttp3.RequestBody;
 
 /**
  * Created by ANKIT on 6/17/2017.
@@ -68,6 +53,7 @@ public class WSLogin {
                     if (jsonObject != null) {
                         DelTrackApp.getInstance().getSharedPreferences().edit().putString(Const.PREF_USERNAME, jsonObject.getString("UserName")).commit();
                         DelTrackApp.getInstance().getSharedPreferences().edit().putString(Const.PREF_DEALERCODE, jsonObject.getString("DealerCode")).commit();
+                        DelTrackApp.getInstance().getSharedPreferences().edit().putString(Const.PREF_USERID, jsonObject.getString("UserID")).commit();
                         DelTrackApp.getInstance().getSharedPreferences().edit().putBoolean(Const.PREF_ISREGISTER, true).commit();
                         return true;
                     } else {
