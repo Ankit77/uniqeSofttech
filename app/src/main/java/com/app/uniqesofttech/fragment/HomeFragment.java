@@ -13,8 +13,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.app.uniqesofttech.DelTrackApp;
+import com.app.uniqesofttech.MainActivity;
 import com.app.uniqesofttech.R;
 import com.app.uniqesofttech.SpinnerAdapter;
 import com.app.uniqesofttech.model.CustomerModel;
@@ -22,6 +24,8 @@ import com.app.uniqesofttech.model.PaymentModel;
 import com.app.uniqesofttech.model.SyncModel;
 import com.app.uniqesofttech.util.Const;
 import com.app.uniqesofttech.util.Utils;
+import com.app.uniqesofttech.webservice.GetCustomerData;
+import com.app.uniqesofttech.webservice.GetPaymentMode;
 import com.app.uniqesofttech.webservice.WSDeliveryData;
 
 import java.util.ArrayList;
@@ -44,17 +48,22 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ArrayList<PaymentModel> paymentlist;
     private AsyncSubmitData asyncSubmitData;
     private int paymentmode = -1;
-
+    private MainActivity mainActivity;
+    private AsyncLoadCustomerData asyncLoadCustomerData;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, null);
+        mainActivity = (MainActivity) getActivity();
         init();
         return view;
     }
 
     private void init() {
+        mainActivity.getImgRefresh().setVisibility(View.VISIBLE);
+        mainActivity.getImgLogout().setVisibility(View.VISIBLE);
+        mainActivity.getTvTitle().setText("Del-Track");
         etAmont = (EditText) view.findViewById(R.id.fragment_home_et_amount);
         etCusId = (EditText) view.findViewById(R.id.fragment_home_et_cusid);
         etCusName = (EditText) view.findViewById(R.id.fragment_home_et_cusname);
@@ -66,6 +75,22 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         etPaymentMode.setFocusable(false);
         etPaymentMode.setFocusableInTouchMode(false);
         spnrPaymentMode = (Spinner) view.findViewById(R.id.fragment_home_spnr_payment_mode);
+        loadData();
+        btnSubmit.setOnClickListener(this);
+        btnGetInfo.setOnClickListener(this);
+        etPaymentMode.setOnClickListener(this);
+    }
+
+    public void refreshData() {
+        if (Utils.isNetworkAvailable(getActivity())) {
+            asyncLoadCustomerData = new AsyncLoadCustomerData();
+            asyncLoadCustomerData.execute();
+        } else {
+            Utils.displayDialog(getActivity(), getString(R.string.alert_not_connectivity));
+        }
+    }
+
+    private void loadData() {
         paymentlist = DelTrackApp.getInstance().getDatabaseHelper().getPaymentList();
         if (paymentlist != null) {
             spinnerAdapter = new SpinnerAdapter(getActivity(), paymentlist);
@@ -83,9 +108,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
             }
         });
-        btnSubmit.setOnClickListener(this);
-        btnGetInfo.setOnClickListener(this);
-        etPaymentMode.setOnClickListener(this);
     }
 
     @Override
@@ -111,12 +133,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     syncModel.setAmount(etAmont.getText().toString());
                     DelTrackApp.getInstance().getDatabaseHelper().insertSync(syncModel);
                     DelTrackApp.getInstance().getDatabaseHelper().deleteCustomer(etCashMemo.getText().toString());
+                    etAmont.setText("");
+                    etCusName.setText("");
+                    etCusId.setText("");
+                    paymentmode = Integer.parseInt(paymentlist.get(0).getPaymentId());
+                    spnrPaymentMode.setSelection(0);
+                    Toast.makeText(getActivity(), "Data Submited to local database successfully.will submit to server when internet available", Toast.LENGTH_LONG).show();
                 }
-                etAmont.setText("");
-                etCusName.setText("");
-                etCusId.setText("");
-                paymentmode = Integer.parseInt(paymentlist.get(0).getPaymentId());
-                spnrPaymentMode.setSelection(0);
+
             }
         } else if (view == btnGetInfo) {
             if (TextUtils.isEmpty(etCashMemo.getText().toString())) {
@@ -126,9 +150,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 if (customerModel != null) {
                     etCusId.setText(customerModel.getCusid());
                     etCusName.setText(customerModel.getName());
-                }else
-                {
-                    Utils.displayDialog(getActivity(),"No data found for this cashmemo");
+                } else {
+                    Utils.displayDialog(getActivity(), "No data found for this cashmemo");
                 }
             }
         } else if (view == etPaymentMode) {
@@ -166,6 +189,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 Utils.dismissProgressDialog(progressDialog);
 
             }
+
             if (!aBoolean) {
                 SyncModel syncModel = new SyncModel();
                 syncModel.setDealercode(dealercode);
@@ -174,10 +198,59 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 syncModel.setAmount(amount);
                 DelTrackApp.getInstance().getDatabaseHelper().insertSync(syncModel);
                 DelTrackApp.getInstance().getDatabaseHelper().deleteCustomer(cashmemono);
-            }else
-            {
+                Toast.makeText(getActivity(), "Data Submited to local database successfully.will submit to server when internet available", Toast.LENGTH_LONG).show();
+            } else {
                 DelTrackApp.getInstance().getDatabaseHelper().deleteCustomer(cashmemono);
+                Toast.makeText(getActivity(), "Data Submited to server successfully", Toast.LENGTH_LONG).show();
             }
+            etAmont.setText("");
+            etCusName.setText("");
+            etCusId.setText("");
+            paymentmode = Integer.parseInt(paymentlist.get(0).getPaymentId());
+            spnrPaymentMode.setSelection(0);
+
+        }
+    }
+
+
+    private class AsyncLoadCustomerData extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = Utils.displayProgressDialog(getActivity(), "Loading Customer Data");
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (!isCancelled()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    Utils.dismissProgressDialog(progressDialog);
+                }
+                loadData();
+
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_USERID, "");
+            String Date = Const.PREF_DEFAULT_DATETIME;
+            GetCustomerData getCustomerData = new GetCustomerData();
+            ArrayList<CustomerModel> cusList = getCustomerData.executeWebservice(Date, userid);
+            if (cusList != null && cusList.size() > 0) {
+                DelTrackApp.getInstance().getDatabaseHelper().deleteAllCustomerData();
+                DelTrackApp.getInstance().getDatabaseHelper().insertCustomer(cusList);
+            }
+            GetPaymentMode getPaymentMode = new GetPaymentMode();
+            ArrayList<PaymentModel> patmentlist = getPaymentMode.executeWebservice();
+            if (patmentlist != null && patmentlist.size() > 0) {
+                DelTrackApp.getInstance().getDatabaseHelper().deletePaymentMode();
+                DelTrackApp.getInstance().getDatabaseHelper().insertPayment(patmentlist);
+            }
+            return null;
         }
     }
 }

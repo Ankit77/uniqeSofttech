@@ -1,7 +1,6 @@
 package com.app.uniqesofttech.fragment;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,10 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.app.uniqesofttech.DelTrackApp;
+import com.app.uniqesofttech.MainActivity;
 import com.app.uniqesofttech.R;
 import com.app.uniqesofttech.model.CustomerModel;
 import com.app.uniqesofttech.model.PaymentModel;
-import com.app.uniqesofttech.service.CustomerService;
 import com.app.uniqesofttech.util.Const;
 import com.app.uniqesofttech.util.Utils;
 import com.app.uniqesofttech.webservice.GetCustomerData;
@@ -38,16 +37,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView tvVersion;
     private AsyncLogin asyncLogin;
     private AsyncLoadCustomerData asyncLoadCustomerData;
+    private MainActivity mainActivity;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_login, null);
+        mainActivity=(MainActivity)getActivity();
         init();
         return view;
     }
 
     private void init() {
+        mainActivity.getImgRefresh().setVisibility(View.GONE);
+        mainActivity.getImgLogout().setVisibility(View.GONE);
+        mainActivity.getTvTitle().setText("Login");
         etName = (EditText) view.findViewById(R.id.fragment_login_et_username);
         etPassword = (EditText) view.findViewById(R.id.fragment_login_et_password);
         btnLogin = (Button) view.findViewById(R.id.fragment_login_btn_login);
