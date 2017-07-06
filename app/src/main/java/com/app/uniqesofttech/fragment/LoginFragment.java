@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.app.uniqesofttech.DelTrackApp;
 import com.app.uniqesofttech.MainActivity;
@@ -34,7 +33,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private View view;
     private EditText etName, etPassword;
     private Button btnLogin;
-    private TextView tvVersion;
     private AsyncLogin asyncLogin;
     private AsyncLoadCustomerData asyncLoadCustomerData;
     private MainActivity mainActivity;
@@ -55,7 +53,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         etName = (EditText) view.findViewById(R.id.fragment_login_et_username);
         etPassword = (EditText) view.findViewById(R.id.fragment_login_et_password);
         btnLogin = (Button) view.findViewById(R.id.fragment_login_btn_login);
-        tvVersion = (TextView) view.findViewById(R.id.fragment_login_tv_vesrion);
         btnLogin.setOnClickListener(this);
     }
 

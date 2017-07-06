@@ -118,7 +118,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             } else if (TextUtils.isEmpty(etCusName.getText().toString())) {
                 Utils.displayDialog(getActivity(), "Consumer name cant be blank.");
             } else if (TextUtils.isEmpty(etPaymentMode.getText().toString())) {
-                Utils.displayDialog(getActivity(), "Please select payment mode");
+                Utils.displayDialog(getActivity(), "Please select mode of payment");
             } else if (TextUtils.isEmpty(etAmont.getText().toString()) || paymentmode == -1) {
                 Utils.displayDialog(getActivity(), "Please enter amount");
             } else {
@@ -174,7 +174,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            dealercode = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
+            dealercode = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_USERID, "");
             cashmemono = params[0];
             mpaymentmode = params[1];
             amount = params[2];
