@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     asyncSubmitData.execute(etCashMemo.getText().toString(), String.valueOf(paymentmode), etAmont.getText().toString());
                 } else {
                     SyncModel syncModel = new SyncModel();
-                    syncModel.setDealercode(DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, ""));
+                    syncModel.setDealercode(DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_USERID, ""));
                     syncModel.setCashmemono(etCashMemo.getText().toString());
                     syncModel.setPaymentmode(String.valueOf(paymentmode));
                     syncModel.setAmount(etAmont.getText().toString());
