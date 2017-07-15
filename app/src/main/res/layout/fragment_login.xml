@@ -7,7 +7,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/fragment_login_tv_vesrion"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingLeft="@dimen/_20sdp"
@@ -41,13 +40,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:text="BDZPK12" />
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+
+                />
 
             <TextView
                 style="@style/normal_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
+
                 android:text="Password" />
 
             <EditText
@@ -56,7 +59,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:text="BDZPK12" />
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+
+                />
         </LinearLayout>
 
 
@@ -69,15 +75,5 @@
             android:text="Login" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/fragment_login_tv_vesrion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:gravity="center"
-        android:text="1.1"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/_12sdp" />
 
 </RelativeLayout>

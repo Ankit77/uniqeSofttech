@@ -8,6 +8,7 @@ public class CustomerModel {
     private String address;
     private String cusid;
     private String name;
+    private String cashMemoNo;
 
 
     public String getAddress() {
@@ -32,5 +33,13 @@ public class CustomerModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCashMemoNo() {
+        return cashMemoNo;
+    }
+
+    public void setCashMemoNo(String cashMemoNo) {
+        this.cashMemoNo = cashMemoNo;
     }
 }

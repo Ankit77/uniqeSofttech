@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.app.uniqesofttech.MainActivity">
+    tools:context="com.app.uniqesofttech.MainActivity"
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,7 +26,15 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/_16sdp"
             android:textStyle="bold" />
-
+        <ImageView
+            android:id="@+id/activity_main_imgRefresh"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:scaleType="fitXY"
+            android:layout_toLeftOf="@+id/activity_main_imgLogout"
+            android:src="@drawable/ic_refresh" />
         <ImageView
             android:id="@+id/activity_main_imgLogout"
             android:layout_width="@dimen/_20sdp"
@@ -33,13 +43,13 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/_10sdp"
             android:scaleType="fitXY"
-            android:src="@drawable/logout" />
+            android:src="@drawable/ic_logout" />
     </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/activity_main_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp"></FrameLayout>
-</RelativeLayout>
+</LinearLayout>
