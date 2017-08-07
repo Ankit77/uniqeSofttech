@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void init() {
         mainActivity.getImgRefresh().setVisibility(View.VISIBLE);
         mainActivity.getImgLogout().setVisibility(View.VISIBLE);
-        mainActivity.getTvTitle().setText("Del-Track");
+        mainActivity.getTvTitle().setText("Welcome, "+DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_USERNAME,""));
         etAmont = (EditText) view.findViewById(R.id.fragment_home_et_amount);
         etCusId = (EditText) view.findViewById(R.id.fragment_home_et_cusid);
         etCusName = (EditText) view.findViewById(R.id.fragment_home_et_cusname);
@@ -115,9 +115,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if (view == btnSubmit) {
             if (TextUtils.isEmpty(etCusId.getText().toString())) {
                 Utils.displayDialog(getActivity(), "Consumerid cant be blank.");
-            } else if (TextUtils.isEmpty(etCusName.getText().toString())) {
-                Utils.displayDialog(getActivity(), "Consumer name cant be blank.");
-            } else if (TextUtils.isEmpty(etPaymentMode.getText().toString())) {
+            }
+//            else if (TextUtils.isEmpty(etCusName.getText().toString())) {
+//                Utils.displayDialog(getActivity(), "Consumer name cant be blank.");
+//            }
+            else if (TextUtils.isEmpty(etPaymentMode.getText().toString())) {
                 Utils.displayDialog(getActivity(), "Please select mode of payment");
             } else if (TextUtils.isEmpty(etAmont.getText().toString()) || paymentmode == -1) {
                 Utils.displayDialog(getActivity(), "Please enter amount");
@@ -148,8 +150,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             } else {
                 CustomerModel customerModel = DelTrackApp.getInstance().getDatabaseHelper().getCustomer(etCashMemo.getText().toString());
                 if (customerModel != null) {
-                    etCusId.setText(customerModel.getCusid());
-                    etCusName.setText(customerModel.getName());
+                    etCusId.setText(customerModel.getCusid()+","+customerModel.getName());
+//                    etCusName.setText(customerModel.getName());
                 } else {
                     Utils.displayDialog(getActivity(), "No data found for this cashmemo");
                 }
