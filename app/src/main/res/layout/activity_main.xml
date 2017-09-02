@@ -26,7 +26,15 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/_16sdp"
             android:textStyle="bold" />
-
+        <ImageView
+            android:id="@+id/activity_main_imgRefresh"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:scaleType="fitXY"
+            android:layout_toLeftOf="@+id/activity_main_imgLogout"
+            android:src="@drawable/ic_refresh" />
         <ImageView
             android:id="@+id/activity_main_imgLogout"
             android:layout_width="@dimen/_20sdp"
@@ -35,7 +43,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/_10sdp"
             android:scaleType="fitXY"
-            android:src="@drawable/logout" />
+            android:src="@drawable/ic_logout" />
     </RelativeLayout>
 
     <FrameLayout

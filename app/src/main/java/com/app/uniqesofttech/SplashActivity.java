@@ -88,7 +88,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-          String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
+          String userid = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_USERID, "");
             String Date = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_LASTUPDATE, Const.PREF_DEFAULT_DATETIME);
             GetCustomerData getCustomerData = new GetCustomerData();
             ArrayList<CustomerModel> cusList = getCustomerData.executeWebservice(Date, userid);

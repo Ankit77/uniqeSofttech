@@ -76,7 +76,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            dealercode = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_DEALERCODE, "");
+            dealercode = DelTrackApp.getInstance().getSharedPreferences().getString(Const.PREF_USERID, "");
             cashmemono = params[0];
             mpaymentmode = params[1];
             amount = params[2];
